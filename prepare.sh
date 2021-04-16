@@ -14,6 +14,8 @@ chown -R dev:dev /docker_projects
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o /home/dev/.git-completion.bash
 ln -s /docker_projects /home/dev/docker
 usermod -G docker dev
+chown -R dev:dev /docker_projects
+chown -R dev:dev /home/dev
 cat << EOF >> /home/dev/.bashrc
 
 cd /docker_projects
