@@ -19,9 +19,10 @@ chown -R dev:dev /home/dev
 cat << EOF >> /home/dev/.bashrc
 
 cd /docker_projects
-
 sudo service docker start
+
 EOF
+cat autocompletition.bashrc >> .bashrc
 
 cat << EOF >> /etc/sudoers
 dev ALL=(ALL) NOPASSWD:ALL
