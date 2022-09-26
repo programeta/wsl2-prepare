@@ -19,6 +19,11 @@ chown -R dev:dev /home/dev
 cat << EOF >> /home/dev/.bashrc
 
 cd /docker_projects
+VERSION=`lsb_release -r | cut -f2`
+if [ "$VERSION" = "22.04" ]
+then
+   sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+fi
 sudo service docker start
 
 EOF
@@ -27,4 +32,3 @@ cat autocompletition.bashrc >> .bashrc
 cat << EOF >> /etc/sudoers
 dev ALL=(ALL) NOPASSWD:ALL
 EOF
-
