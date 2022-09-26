@@ -17,13 +17,15 @@ usermod -G docker dev
 chown -R dev:dev /docker_projects
 chown -R dev:dev /home/dev
 cat << EOF >> /home/dev/.bashrc
+
 cd /docker_projects
 VERSION=`lsb_release -r | cut -f2`
 if [ "$VERSION" = "22.04" ]
 then
-   update-alternatives --set iptables /usr/sbin/iptables-legacy
+   sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 fi
 sudo service docker start
+
 EOF
 cat autocompletition.bashrc >> .bashrc
 
