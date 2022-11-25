@@ -19,11 +19,7 @@ chown -R dev:dev /home/dev
 cat << EOF >> /home/dev/.bashrc
 
 cd /docker_projects
-VERSION=`lsb_release -r | cut -f2`
-if [ "$VERSION" = "22.04" ]
-then
-   sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-fi
+sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 sudo service docker start
 
 EOF

@@ -1,1 +1,1 @@
-Personal script to prepare a new installation of WSL2-Ubuntu20.04
+Personal script to prepare a new installation of WSL2-Ubuntu22.04
