@@ -4,6 +4,7 @@ apt install apt-transport-https ca-certificates curl software-properties-common 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg |sudo gpg --export
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
 apt-get update
+apt install php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make -y
 apt install docker-ce net-tools -y
 curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
