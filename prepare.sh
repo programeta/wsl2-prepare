@@ -4,6 +4,7 @@
 Black='\033[0;30m'        # Black
 Red='\033[0;31m'          # Red
 Green='\033[0;32m'        # Green
+LightGreen='\033[1;32m'   # LightGreen
 Yellow='\033[0;33m'       # Yellow
 Blue='\033[0;34m'         # Blue
 Purple='\033[0;35m'       # Purple
@@ -15,9 +16,9 @@ Color_Off='\033[0m'       # Text Reset
 checkStatusCode () {
   if [ $? -eq 0 ]
   then
-    echo -e "\r\033[K${Green}$2${Color_Off}"
+    echo -e "\r\033[K${Blue}$2 ${White}[${Green}OK${White}]${Color_Off}"
   else
-    echo -e "\r\033[K${Red}$2${Color_Off}"
+    echo -e "\r\033[K${Red}$2 ${White}[${Red}ERROR${White}]${Color_Off}"
     echo -e "${Red}Code: $1"
     exit $1
   fi
