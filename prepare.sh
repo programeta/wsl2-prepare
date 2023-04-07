@@ -28,6 +28,27 @@ printInline () {
   echo -ne "${Yellow}$1...${Color_Off}"
 }
 
+execute () {
+  
+  TEXT=$1
+  ERRORCODE="$2"
+  shift 2
+  COMMANDS=$@
+
+  printInline "$TEXT"
+  for ARG in "${COMMANDS[@]}"; do
+    eval $ARG
+    if [ $? -ne 0 ]
+    then
+      echo -e "\r\033[K${Red}$TEXT ${White}[${Red}ERROR${White}]${Color_Off}"
+      echo -e "${Red}Code: $ERRORCODE"
+      exit $ERRORCODE
+    fi
+  done
+  checkStatusCode $ERRORCODE "$TEXT"
+}
+
+
 echo -e "\n\n${White}#########################${Color_Off}"
 echo -e "${White}#  WSL2-PREPARE SCRIPT  #${Color_Off}"
 echo -e "${White}#                       #${Color_Off}"
@@ -39,62 +60,54 @@ echo -e "${White}#########################${Color_Off}\n\n"
 START=`date +%s`
 
 # Step 1.
-TEXT="Update apt packages"
-printInline "$TEXT"
-apt-get update > /dev/null 2>&1
-checkStatusCode 1 "$TEXT"
+COMMANDS=("apt-get update > /dev/null 2>&1")
+execute "Update apt packages" 1 $COMMANDS
 
 # Step 2.
-TEXT="Install packages (apt-transport-https ca-certificates curl software-properties-common gnupg2)"
-printInline "$TEXT"
-apt install apt-transport-https ca-certificates curl software-properties-common gnupg2 -y > /dev/null 2>&1
-checkStatusCode 2 "$TEXT"
+COMMANDS=("apt install apt-transport-https ca-certificates curl software-properties-common gnupg2 -y > /dev/null 2>&1")
+execute "Install packages (apt-transport-https ca-certificates curl software-properties-common gnupg2)" 2 $COMMANDS
 
 # Step 3.
-TEXT="Install docker repository to apt"
-printInline "$TEXT"
-. /etc/os-release > /dev/null 2>&1
-curl -fsSL https://download.docker.com/linux/${ID}/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc > /dev/null 2>&1
-echo "deb [arch=amd64] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1
-checkStatusCode 3 "$TEXT"
+COMMANDS=(
+  '. /etc/os-release > /dev/null 2>&1'
+  'curl -fsSL https://download.docker.com/linux/${ID}/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc > /dev/null 2>&1'
+  'echo "deb [arch=amd64] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1'
+)
+execute "Install docker repository to apt" 3 $COMMANDS
 
 # Step 4.
-TEXT="Update apt packages"
-printInline "$TEXT"
-apt-get update > /dev/null 2>&1
-checkStatusCode 4 "$TEXT"
+COMMANDS=('apt-get update > /dev/null 2>&1')
+execute "Update apt packages" 4 $COMMANDS
 
 # Step 5.
-TEXT="Install packages (php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make)"
-printInline "$TEXT"
-apt install php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make -y > /dev/null 2>&1
-checkStatusCode 5 "$TEXT"
+COMMANDS=("apt install php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make -y > /dev/null 2>&1")
+execute "Install packages (php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make)" 5 $COMMANDS
 
 # Step 6.
-TEXT="Install docker-ce, net-tools and docker-compose"
-printInline "$TEXT"
-apt install docker-ce net-tools -y > /dev/null 2>&1
-curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1
-chmod +x /usr/local/bin/docker-compose
-checkStatusCode 6 "$TEXT"
+COMMANDS=(
+  'apt install docker-ce net-tools -y > /dev/null 2>&1'
+  'curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1'
+  'chmod +x /usr/local/bin/docker-compose'
+)
+execute "Install docker-ce, net-tools and docker-compose" 6 $COMMANDS
 
 # Step 7.
-TEXT="Initialize /docker_projects tree folder"
-printInline "$TEXT"
-mkdir -p /docker_projects
-chown -R dev:dev /docker_projects
-curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o /home/dev/.git-completion.bash > /dev/null 2>&1
-ln -s -f /docker_projects /home/dev/docker
-checkStatusCode 7 "$TEXT"
+COMMANDS=(
+  'mkdir -p /docker_projects'
+  'chown -R dev:dev /docker_projects'
+  'curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o /home/dev/.git-completion.bash > /dev/null 2>&1'
+  'ln -s -f /docker_projects /home/dev/docker'
+)
+execute "Initialize /docker_projects tree folder" 7 $COMMANDS
 
 # Step 8.
-TEXT="Set and update user and groups permissions"
-printInline "$TEXT"
-usermod -G docker dev
-mkdir -p /home/dev/.ssh
-chown -R dev:dev /docker_projects
-chown -R dev:dev /home/dev
-checkStatusCode 8 "$TEXT"
+COMMANDS=(
+  'usermod -G docker dev'
+  'mkdir -p /home/dev/.ssh'
+  'chown -R dev:dev /docker_projects'
+  'chown -R dev:dev /home/dev'
+)
+execute "Set and update user and groups permissions" 8 $COMMANDS
 
 # Step 9.
 TEXT="Generate SSH keys"
