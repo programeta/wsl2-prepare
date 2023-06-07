@@ -70,8 +70,13 @@ execute "Install packages (apt-transport-https ca-certificates curl software-pro
 # Step 3.
 COMMANDS=(
   '. /etc/os-release > /dev/null 2>&1'
-  'curl -fsSL https://download.docker.com/linux/${ID}/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc > /dev/null 2>&1'
-  'echo "deb [arch=amd64] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1'
+  'cp ./Zscaler-Intermediate-Root-CA.crt /usr/local/share/ca-certificates/ > /dev/null 2>&1'
+  'cp ./Zscaler-Intermediate-Root-CA-t.crt /usr/local/share/ca-certificates/ > /dev/null 2>&1'
+  'update-ca-certificates > /dev/null 2>&1'
+  'install -m 0755 -d /etc/apt/keyrings > /dev/null 2>&1'
+  'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null 2>&1'
+  'chmod a+r /etc/apt/keyrings/docker.gpg > /dev/null 2>&1'
+  'echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 2>&1'
 )
 execute "Install docker repository to apt" 3 $COMMANDS
 
