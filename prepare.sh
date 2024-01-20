@@ -70,8 +70,8 @@ execute "Install packages (apt-transport-https ca-certificates curl software-pro
 # Step 3.
 COMMANDS=(
   '. /etc/os-release > /dev/null 2>&1'
+  'cp ./Zscaler-Intermediate-Root-CA.crt /etc/ssl/cert.pem > /dev/null 2>&1'
   'cp ./Zscaler-Intermediate-Root-CA.crt /usr/local/share/ca-certificates/ > /dev/null 2>&1'
-  'cp ./Zscaler-Intermediate-Root-CA-t.crt /usr/local/share/ca-certificates/ > /dev/null 2>&1'
   'update-ca-certificates > /dev/null 2>&1'
   'install -m 0755 -d /etc/apt/keyrings > /dev/null 2>&1'
   'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg > /dev/null 2>&1'
