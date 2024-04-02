@@ -116,6 +116,31 @@ su -c 'ssh-keygen -b 4096 -t rsa -f /home/dev/.ssh/id_rsa -q -N ""' dev
 checkStatusCode 9 "$TEXT"
 
 # Step 10.
+TEXT="Install composer on host machine"
+printInline "$TEXT"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
+checkStatusCode 10 "$TEXT"
+
+# Step 11.
+TEXT="Install homebrew and ddev"
+printInline "$TEXT"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
+sudo apt-get update
+sudo apt-get install build-essential
+/home/linuxbrew/.linuxbrew/bin/brew install ddev/ddev/ddev
+checkStatusCode 11 "$TEXT"
+
+# Step 12.
+TEXT="Install lando"
+printInline "$TEXT"
+/bin/bash -c "$(curl -fsSL https://get.lando.dev/setup-lando.sh)"
+checkStatusCode 12 "$TEXT"
+
+# Step 13.
 TEXT="Update user .bashrc file"
 printInline "$TEXT"
 cat << EOF >> /home/dev/.bashrc
@@ -123,18 +148,19 @@ cat << EOF >> /home/dev/.bashrc
 cd /docker_projects
 sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 sudo service docker start
+echo "export PATH=\$PATH:/home/linuxbrew/.linuxbrew/bin" >> ~/.bashrc
 
 EOF
 cat autocompletition.bashrc >> .bashrc
-checkStatusCode 10 "$TEXT"
+checkStatusCode 13 "$TEXT"
 
-# Step 11.
+# Step 14.
 TEXT="Include current user in sudoers file"
 printInline "$TEXT"
 cat << EOF >> /etc/sudoers
 dev ALL=(ALL) NOPASSWD:ALL
 EOF
-checkStatusCode 11 "$TEXT"
+checkStatusCode 14 "$TEXT"
 
 # Return script execution feedback to user.
 END=`date +%s`
