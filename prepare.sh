@@ -147,7 +147,6 @@ cat << EOF >> /home/dev/.bashrc
 cd /docker_projects
 sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 sudo service docker start
-echo "export PATH=\$PATH:/home/linuxbrew/.linuxbrew/bin" >> ~/.bashrc
 
 EOF
 cat autocompletition.bashrc >> .bashrc
