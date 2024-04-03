@@ -116,6 +116,30 @@ su -c 'ssh-keygen -b 4096 -t rsa -f /home/dev/.ssh/id_rsa -q -N ""' dev
 checkStatusCode 9 "$TEXT"
 
 # Step 10.
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" > /dev/null 2>&1
+COMMANDS=(
+  'php composer-setup.php > /dev/null 2>&1'
+  'php -r "unlink(\"composer-setup.php\");" > /dev/null 2>&1'
+  'mv composer.phar /usr/local/bin/composer > /dev/null 2>&1'
+)
+execute "Install composer on host machine" 10 $COMMANDS
+
+# Step 11.
+COMMANDS=(
+  'apt install libnss3-tools xdg-utils libnspr4 libnss3 -y > /dev/null 2>&1'
+  'wget https://github.com/ddev/ddev/releases/download/v1.22.7/ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
+  'sudo dpkg -i ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
+)
+execute "Install ddev" 11 $COMMANDS
+
+# Step 12.
+COMMANDS=(
+  'wget https://github.com/lando/lando/releases/download/v3.20.8/lando-x64-v3.20.8.deb > /dev/null 2>&1'
+  'sudo dpkg -i lando-x64-v3.20.8.deb > /dev/null 2>&1'
+)
+execute "Install lando" 12 $COMMANDS
+
+# Step 13.
 TEXT="Update user .bashrc file"
 printInline "$TEXT"
 cat << EOF >> /home/dev/.bashrc
@@ -126,15 +150,15 @@ sudo service docker start
 
 EOF
 cat autocompletition.bashrc >> .bashrc
-checkStatusCode 10 "$TEXT"
+checkStatusCode 13 "$TEXT"
 
-# Step 11.
+# Step 14.
 TEXT="Include current user in sudoers file"
 printInline "$TEXT"
 cat << EOF >> /etc/sudoers
 dev ALL=(ALL) NOPASSWD:ALL
 EOF
-checkStatusCode 11 "$TEXT"
+checkStatusCode 14 "$TEXT"
 
 # Return script execution feedback to user.
 END=`date +%s`
