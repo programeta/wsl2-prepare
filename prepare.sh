@@ -116,29 +116,28 @@ su -c 'ssh-keygen -b 4096 -t rsa -f /home/dev/.ssh/id_rsa -q -N ""' dev
 checkStatusCode 9 "$TEXT"
 
 # Step 10.
-TEXT="Install composer on host machine"
-printInline "$TEXT"
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-sudo mv composer.phar /usr/local/bin/composer
-checkStatusCode 10 "$TEXT"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" > /dev/null 2>&1
+COMMANDS=(
+  'php composer-setup.php > /dev/null 2>&1'
+  'php -r "unlink(\"composer-setup.php\");" > /dev/null 2>&1'
+  'mv composer.phar /usr/local/bin/composer > /dev/null 2>&1'
+)
+execute "Install composer on host machine" 10 $COMMANDS
 
 # Step 11.
-TEXT="Install homebrew and ddev"
-printInline "$TEXT"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
-sudo apt-get update
-sudo apt-get install build-essential
-/home/linuxbrew/.linuxbrew/bin/brew install ddev/ddev/ddev
-checkStatusCode 11 "$TEXT"
+COMMANDS=(
+  'apt install libnss3-tools xdg-utils libnspr4 libnss3 -y > /dev/null 2>&1'
+  'wget https://github.com/ddev/ddev/releases/download/v1.22.7/ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
+  'sudo dpkg -i ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
+)
+execute "Install ddev" 11 $COMMANDS
 
 # Step 12.
-TEXT="Install lando"
-printInline "$TEXT"
-/bin/bash -c "$(curl -fsSL https://get.lando.dev/setup-lando.sh)"
-checkStatusCode 12 "$TEXT"
+COMMANDS=(
+  'wget https://github.com/lando/lando/releases/download/v3.20.8/lando-x64-v3.20.8.deb > /dev/null 2>&1'
+  'sudo dpkg -i lando-x64-v3.20.8.deb > /dev/null 2>&1'
+)
+execute "Install lando" 12 $COMMANDS
 
 # Step 13.
 TEXT="Update user .bashrc file"
