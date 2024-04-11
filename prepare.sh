@@ -80,8 +80,11 @@ COMMANDS=('apt-get update > /dev/null 2>&1')
 execute "Update apt packages" 4 $COMMANDS
 
 # Step 5.
-COMMANDS=("apt install php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make -y > /dev/null 2>&1")
-execute "Install packages (php8.1-cli php8.1-xml php8.1-curl php8.1-gd unzip make)" 5 $COMMANDS
+COMMANDS=(
+  "add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1"
+  "apt install php8.3-cli php8.3-xml php8.3-curl php8.3-gd unzip make -y > /dev/null 2>&1"
+)
+execute "Install PHP8.3, unzip and make. (php packages: 'cli', 'xml', 'curl' and 'gd')" 5 $COMMANDS
 
 # Step 6.
 COMMANDS=(
@@ -112,7 +115,11 @@ execute "Set and update user and groups permissions" 8 $COMMANDS
 # Step 9.
 TEXT="Generate SSH keys"
 printInline "$TEXT"
-su -c 'ssh-keygen -b 4096 -t rsa -f /home/dev/.ssh/id_rsa -q -N ""' dev
+if [ ! -f /home/dev/.ssh/id_rsa ]; then
+  su -c 'ssh-keygen -b 4096 -t rsa -f /home/dev/.ssh/id_rsa -q -N ""' dev
+else
+  echo "The file 'id_rsa' already exists on /home/dev/.ssh/ folder. If you want to create a new ssh keys, run 'ssh-keygen' command."
+fi
 checkStatusCode 9 "$TEXT"
 
 # Step 10.
