@@ -29,7 +29,7 @@ printInline () {
 }
 
 execute () {
-  
+
   TEXT=$1
   ERRORCODE="$2"
   shift 2
@@ -48,6 +48,12 @@ execute () {
   checkStatusCode $ERRORCODE "$TEXT"
 }
 
+if [ -d /docker_projects ]
+then
+  printInline "The folder /docker_projects exists won't continue"
+  echo ""
+  exit 1
+fi
 
 echo -e "\n\n${White}#########################${Color_Off}"
 echo -e "${White}#  WSL2-PREPARE SCRIPT  #${Color_Off}"
