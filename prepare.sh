@@ -48,6 +48,7 @@ execute () {
   checkStatusCode $ERRORCODE "$TEXT"
 }
 
+# Check if folder exists.
 if [ -d /docker_projects ]
 then
   printInline "The folder /docker_projects exists won't continue"
@@ -88,14 +89,14 @@ execute "Update apt packages" 4 $COMMANDS
 # Step 5.
 COMMANDS=(
   "add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1"
-  "apt install php8.3-cli php8.3-xml php8.3-curl php8.3-gd unzip make -y > /dev/null 2>&1"
+  "apt install php8.3-cli php8.3-xml php8.3-curl php8.3-gd unzip make docker-compose-plugin -y > /dev/null 2>&1"
 )
 execute "Install PHP8.3, unzip and make. (php packages: 'cli', 'xml', 'curl' and 'gd')" 5 $COMMANDS
 
 # Step 6.
 COMMANDS=(
   'apt install docker-ce net-tools -y > /dev/null 2>&1'
-  'curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1'
+  'curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1'
   'chmod +x /usr/local/bin/docker-compose'
 )
 execute "Install docker-ce, net-tools and docker-compose" 6 $COMMANDS
