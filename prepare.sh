@@ -71,8 +71,8 @@ COMMANDS=("apt-get update > /dev/null 2>&1")
 execute "Update apt packages" 1 $COMMANDS
 
 # Step 2.
-COMMANDS=("apt install apt-transport-https ca-certificates curl software-properties-common gnupg2 -y > /dev/null 2>&1")
-execute "Install packages (apt-transport-https ca-certificates curl software-properties-common gnupg2)" 2 $COMMANDS
+COMMANDS=("apt install apt-transport-https ca-certificates curl software-properties-common gnupg2 libnss3-tools xdg-utils libnspr4 libnss3 -y > /dev/null 2>&1")
+execute "Install common packages (apt-transport-https ca-certificates curl software-properties-common gnupg2)" 2 $COMMANDS
 
 # Step 3.
 COMMANDS=(
@@ -88,7 +88,7 @@ execute "Update apt packages" 4 $COMMANDS
 
 # Step 5.
 COMMANDS=(
-  "add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1"
+  # "add-apt-repository ppa:ondrej/php -y"
   "apt install php8.3-cli php8.3-xml php8.3-curl php8.3-gd unzip make docker-compose-plugin -y > /dev/null 2>&1"
 )
 execute "Install PHP8.3, unzip and make. (php packages: 'cli', 'xml', 'curl' and 'gd')" 5 $COMMANDS
@@ -129,30 +129,6 @@ else
 fi
 checkStatusCode 9 "$TEXT"
 
-# Step 10.
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" > /dev/null 2>&1
-COMMANDS=(
-  'php composer-setup.php > /dev/null 2>&1'
-  'php -r "unlink(\"composer-setup.php\");" > /dev/null 2>&1'
-  'mv composer.phar /usr/local/bin/composer > /dev/null 2>&1'
-)
-execute "Install composer on host machine" 10 $COMMANDS
-
-# Step 11.
-COMMANDS=(
-  'apt install libnss3-tools xdg-utils libnspr4 libnss3 -y > /dev/null 2>&1'
-  'wget https://github.com/ddev/ddev/releases/download/v1.22.7/ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
-  'sudo dpkg -i ddev_1.22.7_linux_amd64.deb > /dev/null 2>&1'
-)
-execute "Install ddev" 11 $COMMANDS
-
-# Step 12.
-COMMANDS=(
-  'wget https://github.com/lando/lando/releases/download/v3.20.8/lando-x64-v3.20.8.deb > /dev/null 2>&1'
-  'sudo dpkg -i lando-x64-v3.20.8.deb > /dev/null 2>&1'
-)
-execute "Install lando" 12 $COMMANDS
-
 # Step 13.
 TEXT="Update user .bashrc file"
 printInline "$TEXT"
@@ -173,6 +149,31 @@ cat << EOF >> /etc/sudoers
 dev ALL=(ALL) NOPASSWD:ALL
 EOF
 checkStatusCode 14 "$TEXT"
+
+# Step 10.
+
+COMMANDS=(
+  'curl -o composer-setup.php https://getcomposer.org/installer > /dev/null 2>&1'
+  'php composer-setup.php > /dev/null 2>&1'
+  'php -r "unlink(\"composer-setup.php\");" > /dev/null 2>&1'
+  'mv composer.phar /usr/local/bin/composer > /dev/null 2>&1'
+)
+execute "Install composer on host machine" 10 $COMMANDS
+
+# Step 11.
+COMMANDS=(
+  'su - dev -c "curl -fsSL https://ddev.com/install.sh | bash > /dev/null 2>&1"'
+)
+execute "Install ddev" 11 $COMMANDS
+
+# Step 12.
+COMMANDS=(
+  'curl -fsSL https://get.lando.dev/setup-lando.sh -o /tmp/setup-lando.sh'
+  'su - dev -c "bash /tmp/setup-lando.sh --no-setup --yes  > /dev/null 2>&1"'
+  'rm /tmp/setup-lando.sh'
+)
+execute "Install lando" 12 $COMMANDS
+
 
 # Return script execution feedback to user.
 END=`date +%s`
