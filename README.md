@@ -5,6 +5,8 @@ This project was created for the automatic initialization of a WSL2 environment 
 This script has been separated into several independent steps that completely configure the environment to start developing.
 
 Some of the tools that are installed out of the box are:
+- PHP
+- Composer
 - Docker
 - Docker-compose
 - DDEV
@@ -12,7 +14,7 @@ Some of the tools that are installed out of the box are:
 
 ## Requirements
 - To have a local user 'dev' as will be our main non-root user.
-- To use WSL2 under Ubuntu22.04. Other distributions may be not compatible with.
+- To use WSL2 under Ubuntu-22.04 and Ubuntu-24.04 distributions. Other distributions may be not compatible with.
 
 ## Installation
 ```sh

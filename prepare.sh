@@ -129,7 +129,7 @@ else
 fi
 checkStatusCode 9 "$TEXT"
 
-# Step 13.
+# Step 10.
 TEXT="Update user .bashrc file"
 printInline "$TEXT"
 cat << EOF >> /home/dev/.bashrc
@@ -139,18 +139,16 @@ sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 sudo service docker start
 
 EOF
-cat autocompletition.bashrc >> .bashrc
-checkStatusCode 13 "$TEXT"
+cat autocompletition.bashrc >> /home/dev/.bashrc
+checkStatusCode 10 "$TEXT"
 
-# Step 14.
+# Step 11.
 TEXT="Include current user in sudoers file"
 printInline "$TEXT"
-cat << EOF >> /etc/sudoers
-dev ALL=(ALL) NOPASSWD:ALL
-EOF
-checkStatusCode 14 "$TEXT"
+echo "dev ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers > /dev/null
+checkStatusCode 11 "$TEXT"
 
-# Step 10.
+# Step 12.
 
 COMMANDS=(
   'curl -o composer-setup.php https://getcomposer.org/installer > /dev/null 2>&1'
@@ -158,21 +156,21 @@ COMMANDS=(
   'php -r "unlink(\"composer-setup.php\");" > /dev/null 2>&1'
   'mv composer.phar /usr/local/bin/composer > /dev/null 2>&1'
 )
-execute "Install composer on host machine" 10 $COMMANDS
+execute "Install composer on host machine" 12 $COMMANDS
 
-# Step 11.
+# Step 13.
 COMMANDS=(
   'su - dev -c "curl -fsSL https://ddev.com/install.sh | bash > /dev/null 2>&1"'
 )
-execute "Install ddev" 11 $COMMANDS
+execute "Install ddev" 13 $COMMANDS
 
-# Step 12.
+# Step 14.
 COMMANDS=(
   'curl -fsSL https://get.lando.dev/setup-lando.sh -o /tmp/setup-lando.sh'
   'su - dev -c "bash /tmp/setup-lando.sh --no-setup --yes  > /dev/null 2>&1"'
   'rm /tmp/setup-lando.sh'
 )
-execute "Install lando" 12 $COMMANDS
+execute "Install lando" 14 $COMMANDS
 
 
 # Return script execution feedback to user.
