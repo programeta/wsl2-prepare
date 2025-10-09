@@ -46,8 +46,7 @@ banner () {
   echo "│         oembunut / pgrandeg — NTTDATA        │"
   echo "│                  2023–2025                   │"
   echo "└──────────────────────────────────────────────┘"
-  echo -e "${Color_Off}"
-  echo -e "${White}Log: ${Cyan}${LOGFILE}${Color_Off}\n"
+  echo -e "${Color_Off}${White}Log: ${Cyan}${LOGFILE}${Color_Off}\n"
 }
 
 note () { echo -e "${Cyan}ℹ${Color_Off} $*"; }
