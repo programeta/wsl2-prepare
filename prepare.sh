@@ -28,7 +28,7 @@ if ! touch "$LOGFILE" >/dev/null 2>&1; then
 fi
 export DEBIAN_FRONTEND=noninteractive
 
-TOTAL_STEPS=14
+TOTAL_STEPS=7
 CURRENT_STEP=0
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -45,7 +45,7 @@ banner () {
   echo "│               WSL2-PREPARE 🚀                │"
   echo "│         oembunut / pgrandeg — NTTDATA        │"
   echo "│                  2023–2025                   │"
-  echo "└──────────────────────────────────────────────┘${Color_Off}"
+  echo "└──────────────────────────────────────────────┘ ${Color_Off}"
   echo -e "${White}Log: ${Cyan}${LOGFILE}${Color_Off}\n"
 }
 
@@ -138,13 +138,13 @@ run_step "Instalar PHP 8.3, unzip y make" 5 \
 #  "curl -L 'https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-\$(uname -s)-\$(uname -m)' -o /usr/local/bin/docker-compose" \
 #  "chmod +x /usr/local/bin/docker-compose"
 
-run_step "Inicializar árbol /docker_projects" 7 \
+run_step "Inicializar árbol /docker_projects" 6 \
   "mkdir -p /docker_projects" \
   "chown -R dev:dev /docker_projects" \
   "curl -fsSL https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o /home/dev/.git-completion.bash" \
   "ln -s -f /docker_projects /home/dev/docker"
 
-run_step "Permisos de usuario y grupos" 8 \
+run_step "Permisos de usuario y grupos" 7 \
   "usermod -aG docker dev" \
   "mkdir -p /home/dev/.ssh" \
   "chown -R dev:dev /docker_projects" \
