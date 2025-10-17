@@ -167,11 +167,11 @@ fi
 CURRENT_STEP=$((CURRENT_STEP + 1))
 printf "%b %s " "${Blue}${ICON_STEP} Paso ${CURRENT_STEP}/${TOTAL_STEPS}:${Color_Off}" "Actualizar .bashrc de dev"
 {
-  append_once "" "/home/dev/.bashrc"
-  append_once "cd /docker_projects" "/home/dev/.bashrc"
-  append_once "sudo update-alternatives --set iptables /usr/sbin/iptables-legacy" "/home/dev/.bashrc"
-  append_once "sudo service docker start" "/home/dev/.bashrc"
+  append_once "# Prepare auto completion and ensure docker is started" "/home/dev/.bashrc"
   cat autocompletition.bashrc >> /home/dev/.bashrc 2>/dev/null || true
+  append_once "cd /docker_projects" "/home/dev/.bashrc"
+  #append_once "sudo update-alternatives --set iptables /usr/sbin/iptables-legacy" "/home/dev/.bashrc"
+  append_once "sudo service docker start" "/home/dev/.bashrc"
   chown dev:dev /home/dev/.bashrc
 } >>"$LOGFILE" 2>&1 || fail 10 "Actualizar .bashrc de dev"
 echo -e "\r\033[K${LightGreen}${ICON_OK} Actualizar .bashrc de dev${Color_Off}"
