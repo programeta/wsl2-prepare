@@ -130,8 +130,8 @@ run_step "Añadir repositorio de Docker a apt" 3 \
 run_step "Actualizar índices de apt (de nuevo)" 4 \
   "apt-get update"
 
-run_step "Instalar PHP 8.3, unzip y make" 5 \
-  "apt-get install -y php8.3-cli php8.3-xml php8.3-curl php8.3-gd unzip make docker-compose-plugin docker-ce docker-ce-cli containerd.io docker-buildx-plugin net-tools"
+run_step "Instalar PHP, unzip y make" 5 \
+  "apt-get install -y php-cli php-xml php-curl php-gd unzip make docker-compose-plugin docker-ce docker-ce-cli containerd.io docker-buildx-plugin net-tools"
 
 #run_step "Instalar docker-ce, net-tools y docker-compose v2" 6 \
 #  "apt-get install -y docker-ce net-tools" \
